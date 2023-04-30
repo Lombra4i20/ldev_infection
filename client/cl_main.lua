@@ -103,6 +103,18 @@ Citizen.CreateThread(function()
 	end
 end)
 
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(0)
+        
+        -- Verifica se o jogador pressionou a tecla 'E'
+        if IsControlJustPressed(0, 38) then
+            -- Chama o evento "usarBandagem" no servidor
+            TriggerServerEvent('usarBandagem')
+        end
+    end
+end)
+
 function applyDmg()
 	Citizen.CreateThread(function()
 	while true do

@@ -5,3 +5,8 @@ client_scripts {
 	'config.lua',
 	'client/cl_main.lua',
 }
+
+server_scripts {
+	'sv_main.lua',
+
+}
