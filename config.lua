@@ -1,5 +1,5 @@
 Config = {}
-Config.msg = "You are getting sick..." -- Displays when Player is in infected area
+Config.msg = "Você está ficando doente..." -- Displays when Player is in infected area
 Config.TimeMax = 20000 -- How much time player can spend in Armadillo before getting hurt DEFAULT: 5m
 Config.HurtRefresh = 5000 -- Hurting Rate DEFAULT: 5sec
 Config.HurtAmount = 3 -- How much amount should be player damaged by DEFAULT: 3
