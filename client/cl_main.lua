@@ -47,7 +47,7 @@ Citizen.CreateThread(function()
             end
         else
             -- Verifica se a infecção durou por 2 minutos
-            if (currentTime - lastInfectedTime) > 12000 then -- 2 minutos
+            if (currentTime - lastInfectedTime) > 120000 then -- 2 minutos
                 ClearPlayerHasDamagedAtLeastOneNonAnimalPed(playerPed)
                 ClearPlayerHasDamagedAtLeastOnePed(playerPed)
                 isLoopRunning = true
