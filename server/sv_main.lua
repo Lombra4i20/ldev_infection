@@ -2,17 +2,24 @@ local VORPInv = {}
 
 VORPInv = exports.vorp_inventory:vorp_inventoryApi()
 
-RegisterServerEvent('usarBandagem')
-AddEventHandler('usarBandagem', function()
-    local _source = source
-    local player = VorpCore.getUser(_source)
-    local bandagem = VORPInv.getItem(_source, 'bandage')
-    
+TriggerEvent("getCore", function(core)
+    VORPcore = core
+end)
+
+RegisterNetEvent('usarbandagem:server')
+AddEventHandler('usarbandagem:server', function()
+    local source = source
+    local player = VORPcore.getUser(source)
+    local bandagem = VORPInv.getItem(source, 'bandage')
+
     if bandagem then   
-        infected = false -- Mudando a variável infected para false
-        VORPInv.subItem(_source, 'bandage', 1)
-        VORPcore.NotifyRightTip(_source,"Você usou uma bandagem",4000)
+        VORPInv.subItem(source, 'bandage', 1)
+        TriggerClientEvent("vorp:TipRight", source, "Você usou uma bandagem")
+		
+		-- envia mensagem para atualizar a variável infected no cliente
+        TriggerClientEvent("atualizarInfected", source, false)
     else
-        VORPcore.NotifyRightTip(_source,"Você não tem nenhuma bandagem",4000)
+        TriggerClientEvent("vorp:TipRight", source, "Você não tem nenhuma bandagem")
     end
 end)
+

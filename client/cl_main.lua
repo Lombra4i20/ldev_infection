@@ -1,6 +1,7 @@
 TriggerEvent("getCore", function(core)
     VORPcore = core
 end)
+progressbar = exports.vorp_progressbar:initiate()
 
 local infected = false
 local lastInfectedTime = 0
@@ -103,16 +104,27 @@ Citizen.CreateThread(function()
 	end
 end)
 
-Citizen.CreateThread(function()
-    while true do
-        Citizen.Wait(0)
-        
-        -- Verifica se o jogador pressionou a tecla 'E'
-        if IsControlJustPressed(0, 38) then
-            -- Chama o evento "usarBandagem" no servidor
-            TriggerServerEvent('usarBandagem')
-        end
+
+RegisterNetEvent('curar')
+AddEventHandler('curar', function()
+    TriggerServerEvent('usarbandagem:server')
+end)
+
+
+RegisterCommand("curar", function(source, args)
+    if infected then       
+            
+        TriggerServerEvent('usarbandagem:server')	
+    else        
+        VORPcore.NotifyRightTip("Você não está infectado", 4000)    
     end
+end)
+RegisterNetEvent("atualizarInfected")
+AddEventHandler("atualizarInfected", function(value) 
+        progressbar.start('Usando bandagem...', 2500, function()	-- O que fazer depois que a barra de progresso terminar, se necessário
+		 end)
+		infected = value
+		
 end)
 
 function applyDmg()
