@@ -1,26 +1,86 @@
+TriggerEvent("getCore", function(core)
+    VORPcore = core
+end)
+
 local sick = 0
 local isArmadillo = false
 local wasDead = false
 Citizen.CreateThread(function()
     while true do
-		Citizen.Wait(0)
-		local playerPed = PlayerPedId()
-		local coords = GetEntityCoords(playerPed)
-		if GetDistanceBetweenCoords(coords, -3667.04, -2611.41, -14.08, true) < Config.PlagueDistance then
-			isArmadillo = true
-		else
-			isArmadillo = false
-			sick = 0
-		end
-	end
+        Citizen.Wait(0)
+        local playerPed = PlayerPedId()
+        local coords = GetEntityCoords(playerPed)
+        local isNearLocation = false
+        for i, location in ipairs(Config.Locations) do
+            if GetDistanceBetweenCoords(coords, location.x, location.y, location.z, true) < Config.PlagueDistance then
+                isNearLocation = true
+                break -- sai do loop assim que encontrar uma localização próxima
+            end
+        end
+        isArmadillo = isNearLocation
+        if not isNearLocation then
+            sick = 0
+        end
+    end	
+	end)
+
+local infected = false
+local lastInfectedTime = 0
+local isLoopRunning = false
+local lastDamageTime = 0
+
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(1000)
+
+        local playerPed = PlayerPedId()
+        local currentTime = GetGameTimer()
+
+        -- Verifica se o jogador já está infectado
+        if not infected then
+            -- Verifica se o jogador foi atacado por um NPC
+            if IsPedInMeleeCombat(playerPed) or IsPedBeingStunned(playerPed, 0) or IsPedBeingStealthKilled(playerPed) then
+                infected = true
+                lastInfectedTime = currentTime
+
+                print("Player infected!")
+            end
+        else
+            -- Verifica se a infecção durou por 2 minutos
+            if (currentTime - lastInfectedTime) > 1200 then -- 2 minutos
+                ClearPlayerHasDamagedAtLeastOneNonAnimalPed(playerPed)
+                ClearPlayerHasDamagedAtLeastOnePed(playerPed)
+                isLoopRunning = true
+
+                infected = false
+                print("Player cured!")
+            elseif (currentTime - lastDamageTime) > 1500 and GetEntityHealth(playerPed) > 0 then -- Verifica se já passaram 3 segundos desde o último dano e o jogador está vivo
+                SetEntityHealth(playerPed, GetEntityHealth(playerPed) - 3)
+                lastDamageTime = currentTime
+            end
+        end
+    end
 end)
+
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(0)
+        while infected do
+            Wait(0)
+            DrawTxt(Config.msg2, 0.50, 0.95, 0.5, 0.5, true, 255, 255, 255, 255, true)
+            sick = sick + 1
+        end
+    end
+end)
+
+
 
 Citizen.CreateThread(function()
 	while true do
 		Citizen.Wait(0)
 			while isArmadillo do
 			Wait(0)
-			DrawTxt(Config.msg, 0.50, 0.95, 0.3, 0.3, true, 255, 255, 255, 255, true)
+			DrawTxt(Config.msg, 0.50, 0.95, 0.5, 0.5, true, 255, 255, 255, 255, true)
 			sick = sick + 1
 			--print(sick)
 		end
