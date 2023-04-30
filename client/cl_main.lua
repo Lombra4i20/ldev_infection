@@ -2,6 +2,11 @@ TriggerEvent("getCore", function(core)
     VORPcore = core
 end)
 
+local infected = false
+local lastInfectedTime = 0
+local isLoopRunning = false
+local lastDamageTime = 0
+
 local sick = 0
 local isArmadillo = false
 local wasDead = false
@@ -24,10 +29,6 @@ Citizen.CreateThread(function()
     end	
 	end)
 
-local infected = false
-local lastInfectedTime = 0
-local isLoopRunning = false
-local lastDamageTime = 0
 
 Citizen.CreateThread(function()
     while true do
@@ -36,14 +37,14 @@ Citizen.CreateThread(function()
         local playerPed = PlayerPedId()
         local currentTime = GetGameTimer()
 
-        -- Verifica se o jogador já está infectado
-        if not infected then
+        -- Verifica se o jogador já está infectado, e se a variável Config.infected é true
+        if not infected and Config.infected then
             -- Verifica se o jogador foi atacado por um NPC
             if IsPedInMeleeCombat(playerPed) or IsPedBeingStunned(playerPed, 0) or IsPedBeingStealthKilled(playerPed) then
                 infected = true
                 lastInfectedTime = currentTime
 
-                print("Player infected!")
+                --print("Player infectado!")
             end
         else
             -- Verifica se a infecção durou por 2 minutos
@@ -53,7 +54,7 @@ Citizen.CreateThread(function()
                 isLoopRunning = true
 
                 infected = false
-                print("Player cured!")
+                --print("Player curado!")
             elseif (currentTime - lastDamageTime) > 1500 and GetEntityHealth(playerPed) > 0 then -- Verifica se já passaram 3 segundos desde o último dano e o jogador está vivo
                 SetEntityHealth(playerPed, GetEntityHealth(playerPed) - 3)
                 lastDamageTime = currentTime
