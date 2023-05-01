@@ -9,7 +9,7 @@ local isLoopRunning = false
 local lastDamageTime = 0
 
 local sick = 0
-local isArmadillo = false
+local naArea = false
 local wasDead = false
 Citizen.CreateThread(function()
     while true do
@@ -23,7 +23,7 @@ Citizen.CreateThread(function()
                 break -- sai do loop assim que encontrar uma localização próxima
             end
         end
-        isArmadillo = isNearLocation
+        naArea = isNearLocation
         if not isNearLocation then
             sick = 0
         end
@@ -80,7 +80,7 @@ end)
 Citizen.CreateThread(function()
 	while true do
 		Citizen.Wait(0)
-			while isArmadillo do
+			while naArea do
 			Wait(0)
 			DrawTxt(Config.msg, 0.50, 0.95, 0.5, 0.5, true, 255, 255, 255, 255, true)
 			sick = sick + 1
