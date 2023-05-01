@@ -119,6 +119,7 @@ RegisterCommand("curar", function(source, args)
         VORPcore.NotifyRightTip("Você não está infectado", 4000)    
     end
 end)
+
 RegisterNetEvent("atualizarInfected")
 AddEventHandler("atualizarInfected", function(value) 
         progressbar.start('Usando bandagem...', 2500, function()	-- O que fazer depois que a barra de progresso terminar, se necessário
